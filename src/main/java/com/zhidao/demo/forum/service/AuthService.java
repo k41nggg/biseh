@@ -20,7 +20,7 @@ public class AuthService {
     public User register(String username, String displayName, String rawPassword) {
         Optional<User> existing = userRepository.findByUsername(username);
         if (existing.isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new IllegalArgumentException("用户名已存在");
         }
         User u = new User();
         u.setUsername(username);

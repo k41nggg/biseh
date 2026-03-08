@@ -56,7 +56,7 @@ public class ForumService {
     }
 
     public Comment addComment(Long postId, CommentDto dto) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("帖子未找到"));
         User user = userRepository.findByUsername(dto.getUsername()).orElseGet(() -> {
             User u = new User();
             u.setUsername(dto.getUsername());
@@ -71,12 +71,12 @@ public class ForumService {
     }
 
     public List<Comment> listComments(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("帖子未找到"));
         return commentRepository.findByPostOrderByCreatedAtAsc(post);
     }
 
     public String summarizePost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("帖子未找到"));
         return summarizer.summarize(post.getContent(), 5, 1000);
     }
 }

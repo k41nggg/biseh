@@ -48,7 +48,7 @@ public class ForumRestController {
             username = ((User) sUser).getUsername();
         }
         if (username == null || username.isBlank()) {
-            throw new ResponseStatusException(BAD_REQUEST, "username is required (login or provide username)");
+            throw new ResponseStatusException(BAD_REQUEST, "需要用户名（请登录或提供用户名）");
         }
         dto.setUsername(username);
         Post p = forumService.createPost(dto);
@@ -57,14 +57,12 @@ public class ForumRestController {
 
     @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> comment(@PathVariable Long id, @Valid @RequestBody CommentDto dto, HttpSession session) {
-        String username = dto.getUsername();
         Object sUser = session.getAttribute("user");
-        if (sUser instanceof User) {
-            username = ((User) sUser).getUsername();
+        if (!(sUser instanceof User)) {
+            throw new ResponseStatusException(UNAUTHORIZED, "请先登录后发表评论");
         }
-        if (username == null || username.isBlank()) {
-            throw new ResponseStatusException(BAD_REQUEST, "username is required (login or provide username)");
-        }
+        // use session user only
+        String username = ((User) sUser).getUsername();
         dto.setUsername(username);
         try {
             Comment c = forumService.addComment(id, dto);

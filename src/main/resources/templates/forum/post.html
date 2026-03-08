@@ -25,15 +25,16 @@
     </li>
 </ul>
 <hr/>
-<h4>添加评论</h4>
-<form id="commentForm" onsubmit="submitComment(event, [[${post.id}]])">
-    <div th:if="${session.user == null}">
-        <input type="text" id="username" placeholder="用户名" required/>
+<div th:if="${session.user != null}">
+    <h4>添加评论</h4>
+    <form id="commentForm" onsubmit="submitComment(event, [[${post.id}]])">
+        <textarea id="content" placeholder="评论内容" required></textarea>
         <br/>
-    </div>
-    <textarea id="content" placeholder="评论内容" required></textarea>
-    <br/>
-    <button type="submit">提交</button>
-</form>
+        <button type="submit">提交</button>
+    </form>
+</div>
+<div th:if="${session.user == null}">
+    <p>请先 <a th:href="@{/login}">登录</a> 后发表评论。</p>
+</div>
 </body>
 </html>
