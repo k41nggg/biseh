@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>写新贴</title>
+</head>
+<body>
+<h1>写新帖</h1>
+<div>
+    <span th:if="${session.user != null}">已登录：<span th:text="${session.user.displayName}"></span> | <form th:action="@{/logout}" method="post" style="display:inline"><button type="submit">退出</button></form></span>
+    <span th:if="${session.user == null}"><a th:href="@{/login}">登录</a> | <a th:href="@{/register}">注册</a></span>
+</div>
+<form id="postForm" onsubmit="submitPost(event)">
+    <div th:if="${session.user == null}">
+        <input type="text" id="username" name="username" placeholder="用户名" required/>
+        <br/>
+    </div>
+    <input type="text" id="title" name="title" placeholder="标题" required/>
+    <br/>
+    <textarea id="content" name="content" placeholder="内容" required></textarea>
+    <br/>
+    <button type="submit">发布</button>
+</form>
+<script>
+    function submitPost(e) {
+        e.preventDefault();
+        const data = {
+            username: document.getElementById('username') ? document.getElementById('username').value : undefined,
+            title: document.getElementById('title').value,
+            content: document.getElementById('content').value
+        };
+        // if username is undefined, we omit it and server will use session user
+        if (data.username === undefined) delete data.username;
+        fetch('/api/posts', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        }).then(r => {
+            if (!r.ok) throw new Error('发布失败');
+            return r.json();
+        }).then(p => {
+            window.location = '/forum/posts/' + p.id;
+        }).catch(err => alert(err.message));
+    }
+</script>
+</body>
+</html>

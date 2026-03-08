@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${post.title}">Post</title>
+    <script src="/forum.js"></script>
+</head>
+<body>
+<h1 th:text="${post.title}"></h1>
+<div>by <span th:text="${post.author.displayName}"></span> at <span th:text="${post.createdAt}"></span></div>
+<hr/>
+<div th:utext="${post.content}"></div>
+<hr/>
+<button onclick="fetchSummary([[${post.id}]])">AI 总结</button>
+<div id="summary"></div>
+<hr/>
+<div>
+    <span th:if="${session.user != null}">已登录：<span th:text="${session.user.displayName}"></span> | <form th:action="@{/logout}" method="post" style="display:inline"><button type="submit">退出</button></form></span>
+    <span th:if="${session.user == null}"><a th:href="@{/login}">登录</a> | <a th:href="@{/register}">注册</a></span>
+</div>
+<h3>评论</h3>
+<ul id="comments">
+    <li th:each="c : ${comments}">
+        <b th:text="${c.author.displayName}"></b>: <span th:text="${c.content}"></span>
+    </li>
+</ul>
+<hr/>
+<h4>添加评论</h4>
+<form id="commentForm" onsubmit="submitComment(event, [[${post.id}]])">
+    <div th:if="${session.user == null}">
+        <input type="text" id="username" placeholder="用户名" required/>
+        <br/>
+    </div>
+    <textarea id="content" placeholder="评论内容" required></textarea>
+    <br/>
+    <button type="submit">提交</button>
+</form>
+</body>
+</html>

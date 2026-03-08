@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Tieba - Home</title>
+</head>
+<body>
+<h1>简化版贴吧 - 帖子列表</h1>
+<div>
+    <span th:if="${session.user != null}">已登录：<span th:text="${session.user.displayName}"></span> | <a th:href="@{/forum/create}">写新帖</a> | <form th:action="@{/logout}" method="post" style="display:inline"><button type="submit">退出</button></form></span>
+    <span th:if="${session.user == null}"><a th:href="@{/login}">登录</a> | <a th:href="@{/register}">注册</a> | <a th:href="@{/forum/create}">写新帖</a></span>
+</div>
+<ul>
+    <li th:each="post : ${posts}">
+        <a th:href="@{/forum/posts/{id}(id=${post.id})}" th:text="${post.title}"></a>
+        <div>by <span th:text="${post.author.displayName}"></span> at <span th:text="${post.createdAt}"></span></div>
+        <p th:text="${post.summary}"></p>
+    </li>
+</ul>
+</body>
+</html>
